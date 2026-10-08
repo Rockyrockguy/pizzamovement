@@ -1,0 +1,36 @@
+name: Build mod
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+
+      - name: Build with wrapper
+        if: ${{ hashFiles('gradlew') != '' }}
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon
+
+      - uses: gradle/actions/setup-gradle@v3
+        if: ${{ hashFiles('gradlew') == '' }}
+        with:
+          gradle-version: '7.6.4'
+      - name: Build with plain Gradle
+        if: ${{ hashFiles('gradlew') == '' }}
+        run: gradle build --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pizzamovement-jar
+          path: build/libs/*.jar
