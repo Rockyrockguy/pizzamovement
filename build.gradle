@@ -1,0 +1,61 @@
+// Based on the Forge 1.16.5 MDK layout. If your MDK's build.gradle differs (ForgeGradle / Gradle version),
+// keep the MDK's buildscript/plugin/wrapper lines and copy only the modid, mappings, runs and dependency parts.
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+
+version = '1.0.0'
+group = 'com.example.pizzamovement'
+archivesBaseName = 'pizzamovement'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+minecraft {
+    mappings channel: 'official', version: '1.16.5'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods { pizzamovement { source sourceSets.main } }
+        }
+        // Second client for multiplayer tests (open world to LAN in the first one, join from this one).
+        // If your ForgeGradle rejects "parent", delete this block and start a second copy another way.
+        client2 {
+            parent runs.client
+            workingDirectory project.file('run2')
+            args '--username', 'Dev2'
+        }
+        server {
+            workingDirectory project.file('run-server')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods { pizzamovement { source sourceSets.main } }
+        }
+    }
+}
+
+dependencies {
+    // Replace with the latest 1.16.5 build from files.minecraftforge.net if you like.
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
+}
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "pizzamovement",
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}"
+        ])
+    }
+}
+jar.finalizedBy('reobfJar')
