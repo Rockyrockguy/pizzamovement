@@ -27,6 +27,8 @@ public class PizzaConfig {
         public final ForgeConfigSpec.DoubleValue wallRunSpeed, wallRunGravity, wallJumpForce, wallJumpVerticalForce, ceilingRunSpeed, exitFallGrace;
         public final ForgeConfigSpec.IntValue wallRunMaxTicks, wallRunMinStage, wallJumpCooldownTicks;
         public final ForgeConfigSpec.BooleanValue cancelOnSneak, allowWallRunInWater, allowCeilingRunInWater, enableParticles;
+        public final ForgeConfigSpec.DoubleValue jetpackThrust, jetpackMaxSpeed, jetpackBreakSpeedFraction, jetpackBreakMaxHardness;
+        public final ForgeConfigSpec.BooleanValue jetpackBreakBlocks;
 
         Server(ForgeConfigSpec.Builder b) {
             b.push("speedStages");
@@ -71,17 +73,28 @@ public class PizzaConfig {
             exitFallGrace = b.comment("Extra fall distance forgiven when you leave a wall or ceiling").defineInRange("exitFallGrace", 2.0, 0.0, 20.0);
             enableParticles = b.define("enableParticles", true);
             b.pop();
+
+            b.push("jetpack");
+            jetpackThrust = b.comment("Acceleration (blocks/tick^2) along the view direction while Jump is held in flight").defineInRange("jetpackThrust", 0.07, 0.0, 1.0);
+            jetpackMaxSpeed = b.comment("Top speed in blocks per tick (2.0 = 40 blocks/s)").defineInRange("jetpackMaxSpeed", 2.0, 0.2, 4.0);
+            jetpackBreakBlocks = b.comment("Break blocks in front at (almost) top speed with the engine on").define("jetpackBreakBlocks", true);
+            jetpackBreakSpeedFraction = b.comment("Fraction of jetpackMaxSpeed needed to start breaking blocks").defineInRange("jetpackBreakSpeedFraction", 0.9, 0.1, 1.0);
+            jetpackBreakMaxHardness = b.comment("Blocks harder than this are not broken (stone 1.5, iron ore 3, obsidian 50)").defineInRange("jetpackBreakMaxHardness", 5.0, 0.0, 100.0);
+            b.pop();
         }
     }
 
     public static class Client {
-        public final ForgeConfigSpec.BooleanValue enableFov, enableHud;
-        public final ForgeConfigSpec.DoubleValue fovPerStage;
+        public final ForgeConfigSpec.BooleanValue enableFov, enableHud, enableJetpackCameraRoll;
+        public final ForgeConfigSpec.DoubleValue fovPerStage, jetpackCameraRoll, jetpackCameraRollMax;
 
         Client(ForgeConfigSpec.Builder b) {
             enableFov = b.define("enableFov", true);
             fovPerStage = b.defineInRange("fovPerStage", 0.03, 0.0, 0.2);
             enableHud = b.define("enableHud", true);
+            enableJetpackCameraRoll = b.define("enableJetpackCameraRoll", true);
+            jetpackCameraRoll = b.comment("Roll degrees per degree of turn per tick; negative inverts the tilt").defineInRange("jetpackCameraRoll", 1.2, -10.0, 10.0);
+            jetpackCameraRollMax = b.defineInRange("jetpackCameraRollMax", 25.0, 0.0, 90.0);
         }
     }
 }

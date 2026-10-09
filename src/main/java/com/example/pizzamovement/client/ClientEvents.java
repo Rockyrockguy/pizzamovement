@@ -8,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -37,6 +39,17 @@ public class ClientEvents {
     @SubscribeEvent
     public void onLogout(ClientPlayerNetworkEvent.LoggedOutEvent e) {
         MovementController.INSTANCE.hardReset();
+        JetpackClient.reset();
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent e) {
+        JetpackClient.onPlayerTick(e);
+    }
+
+    @SubscribeEvent
+    public void onCamera(EntityViewRenderEvent.CameraSetup e) {
+        JetpackClient.onCamera(e);
     }
 
     @SubscribeEvent

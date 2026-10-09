@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IBI",
+    "ILI",
+    "R R"
+  ],
+  "key": {
+    "I": { "item": "minecraft:iron_ingot" },
+    "B": { "item": "minecraft:blaze_rod" },
+    "L": { "item": "minecraft:leather" },
+    "R": { "item": "minecraft:redstone" }
+  },
+  "result": { "item": "pizzamovement:jetpack" }
+}
